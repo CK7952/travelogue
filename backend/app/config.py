@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     supabase_storage_bucket: str = "travelogue"
 
     # Whisper
-    whisper_model: str = "base"  # tiny/base/small/medium/large-v3
+    whisper_model: str = "tiny"  # tiny/base/small/medium/large-v3
     whisper_device: str = "cpu"  # cpu/cuda
     whisper_compute_type: str = "int8"
 
