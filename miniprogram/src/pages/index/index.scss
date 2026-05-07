@@ -1,0 +1,423 @@
+/* ===== 旅行手账风格设计系统 ===== */
+$paper: #f7f3ed;
+$card: #fffef8;
+$ink: #2c241b;
+$ink-light: #5c4f3d;
+$ink-fade: #9e9080;
+$accent-teal: #5b8c85;
+$accent-clay: #c9705c;
+$accent-gold: #c9a227;
+$accent-wash: rgba(91, 140, 133, 0.08);
+$shadow-soft: 0 8px 32px rgba(44, 36, 27, 0.08);
+$shadow-card: 2px 3px 0 rgba(44, 36, 27, 0.06);
+
+/* ===== 页面基底 ===== */
+.index-page {
+  background: $paper;
+  min-height: 100vh;
+  padding-bottom: 200px;
+}
+
+/* ===== 顶部手账标题区 ===== */
+.journal-header {
+  padding: 32px 20px 20px;
+  text-align: center;
+  position: relative;
+}
+
+.journal-header::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: $ink-fade;
+  margin: 16px auto 0;
+  opacity: 0.4;
+}
+
+.journal-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: $ink;
+  letter-spacing: 6px;
+}
+
+.journal-subtitle {
+  font-size: 13px;
+  color: $ink-fade;
+  margin-top: 6px;
+  letter-spacing: 2px;
+}
+
+/* ===== 行程便签区 ===== */
+.trip-section {
+  padding: 0 16px 20px;
+}
+
+.trip-section-label {
+  font-size: 12px;
+  color: $ink-fade;
+  margin-bottom: 12px;
+  padding-left: 4px;
+  letter-spacing: 1px;
+}
+
+.trip-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.trip-tab {
+  padding: 10px 20px;
+  border-radius: 4px 16px 4px 16px;
+  background: $card;
+  box-shadow: $shadow-card;
+  border: 1px solid rgba(44, 36, 27, 0.06);
+  position: relative;
+
+  &.active {
+    background: $accent-teal;
+    box-shadow: 2px 3px 0 rgba(91, 140, 133, 0.3);
+    border-color: transparent;
+
+    .trip-tab-title { color: #fff; }
+    .trip-tab-status { color: rgba(255,255,255,0.75); }
+  }
+
+  &.add-btn {
+    background: transparent;
+    border: 2px dashed $ink-fade;
+    color: $ink-fade;
+    box-shadow: none;
+  }
+}
+
+.trip-tab-delete {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 50%;
+  background: $accent-clay;
+  color: #fff;
+  font-size: 12px;
+  box-shadow: 1px 2px 4px rgba(201, 112, 92, 0.3);
+}
+
+.trip-tab-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: $ink;
+}
+
+.trip-tab-status {
+  font-size: 11px;
+  color: $ink-fade;
+  margin-top: 3px;
+}
+
+/* ===== 当前行程信息条 ===== */
+.trip-info-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  margin: 0 16px 24px;
+  background: $card;
+  border-radius: 8px;
+  box-shadow: $shadow-card;
+  border: 1px solid rgba(44, 36, 27, 0.04);
+}
+
+.trip-destination {
+  font-size: 15px;
+  color: $ink-light;
+  font-weight: 500;
+}
+
+.finish-btn {
+  font-size: 13px;
+  color: #fff;
+  background: $accent-clay;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+  box-shadow: 1px 2px 0 rgba(201, 112, 92, 0.2);
+}
+
+/* ===== 碎片列表 ===== */
+.fragment-list {
+  padding: 0 16px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 20px;
+}
+
+.empty-illustration {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e8e0d4 0%, #d4c8b8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.empty-illustration-inner {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: $paper;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-text {
+  font-size: 15px;
+  color: $ink-fade;
+  text-align: center;
+  line-height: 1.8;
+}
+
+/* ===== 手账卡片（碎片） ===== */
+.fragment-card {
+  background: $card;
+  border-radius: 2px 20px 2px 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: $shadow-soft;
+  position: relative;
+
+  /* 左侧胶带装饰 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 24px;
+    width: 48px;
+    height: 18px;
+    background: rgba(201, 162, 39, 0.25);
+    border-radius: 2px;
+    transform: rotate(-2deg);
+  }
+
+  &.draft {
+    border: 1.5px solid $accent-teal;
+    background: linear-gradient(180deg, #f8faf9 0%, $card 100%);
+
+    &::before {
+      background: rgba(91, 140, 133, 0.25);
+    }
+  }
+}
+
+.fragment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.fragment-date-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: $paper;
+  border-radius: 4px;
+  border: 1px solid rgba(44, 36, 27, 0.06);
+}
+
+.fragment-date-day {
+  font-size: 18px;
+  font-weight: 700;
+  color: $accent-clay;
+  line-height: 1;
+}
+
+.fragment-date-rest {
+  font-size: 11px;
+  color: $ink-fade;
+  line-height: 1.2;
+}
+
+.fragment-delete {
+  font-size: 12px;
+  color: $accent-clay;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: rgba(201, 112, 92, 0.06);
+  font-weight: 500;
+}
+
+.fragment-content {
+  font-size: 16px;
+  line-height: 1.85;
+  color: $ink;
+  font-weight: 400;
+}
+
+/* 手写感引号装饰 */
+.fragment-content::before {
+  content: '"';
+  font-size: 36px;
+  color: $accent-gold;
+  opacity: 0.3;
+  line-height: 0.5;
+  margin-right: 4px;
+  font-family: Georgia, serif;
+}
+
+.fragment-tags {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  font-size: 12px;
+  color: $accent-teal;
+  background: $accent-wash;
+  padding: 4px 12px;
+  border-radius: 2px 10px 2px 10px;
+  font-weight: 600;
+}
+
+/* ===== 照片（拍立得风格） ===== */
+.photo-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.photo-wrapper {
+  aspect-ratio: 1;
+  padding: 6px 6px 20px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 1px 2px 6px rgba(44, 36, 27, 0.1);
+  transform: rotate(-1deg);
+
+  &:nth-child(2) { transform: rotate(1.5deg); }
+  &:nth-child(3) { transform: rotate(-0.5deg); }
+}
+
+.photo-thumb {
+  width: 100%;
+  height: 100%;
+  border-radius: 1px;
+}
+
+.add-photo-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: 6px 6px 20px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 1px 2px 6px rgba(44, 36, 27, 0.08);
+  border: 1.5px dashed $ink-fade;
+  margin-top: 18px;
+  width: 100px;
+}
+
+.add-photo-icon {
+  font-size: 24px;
+  color: $ink-fade;
+  line-height: 1;
+}
+
+.add-photo-text {
+  font-size: 11px;
+  color: $ink-fade;
+  margin-top: 4px;
+}
+
+/* ===== 草稿卡片 ===== */
+.draft-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.draft-label {
+  font-size: 14px;
+  color: $accent-teal;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.draft-hint {
+  font-size: 12px;
+  color: $ink-fade;
+}
+
+.draft-actions {
+  display: flex;
+  margin-top: 24px;
+  gap: 12px;
+}
+
+.btn-save {
+  flex: 1;
+  text-align: center;
+  background: $accent-teal;
+  color: #fff;
+  padding: 14px 0;
+  border-radius: 4px 16px 4px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 2px 3px 0 rgba(91, 140, 133, 0.2);
+}
+
+.btn-discard {
+  flex: 1;
+  text-align: center;
+  background: transparent;
+  color: $ink-fade;
+  padding: 14px 0;
+  border-radius: 4px 16px 4px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 1.5px dashed $ink-fade;
+}
+
+/* ===== 底部录音区 ===== */
+.recorder-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba($paper, 0.95);
+  backdrop-filter: blur(16px);
+  padding: 16px 0 40px;
+  border-top: 1px solid rgba(44, 36, 27, 0.06);
+  z-index: 10;
+}
+
+.transcribing-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 28px 0;
+  color: $accent-teal;
+  font-size: 16px;
+  font-weight: 600;
+}
