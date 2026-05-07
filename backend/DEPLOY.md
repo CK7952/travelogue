@@ -59,11 +59,11 @@ SUPABASE_URL=https://xxxxx.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=eyJ...（你的 service role key）
 SUPABASE_STORAGE_BUCKET=travelogue
 
-# LLM（示例用 Kimi / Moonshot）：https://platform.moonshot.cn/
-LLM_BASE_URL=https://api.moonshot.cn/v1
-LLM_API_KEY=sk-你的KimiKey
-LLM_MODEL_CLEAN=moonshot-v1-8k
-LLM_MODEL_ESSAY=moonshot-v1-32k
+# LLM（示例用 Kimi Code）：https://kimi.com/code
+LLM_BASE_URL=https://api.kimi.com/coding/v1
+LLM_API_KEY=sk-你的KimiCodeKey
+LLM_MODEL_CLEAN=kimi-for-coding
+LLM_MODEL_ESSAY=kimi-for-coding
 
 # CORS：填你的前端域名，多个逗号分隔
 CORS_ORIGINS=https://your-web-domain.com,https://your-miniprogram-domain.com
