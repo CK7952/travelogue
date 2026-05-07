@@ -11,13 +11,10 @@ import sys
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from app.config import get_settings
-from app.database import Base
+from app.database import Base, engine
 
 # Import all models so Base.metadata knows about them
 from app.models import Trip, Fragment, Scene, Essay
-
-settings = get_settings()
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -38,23 +35,10 @@ target_metadata = Base.metadata
 # ... etc.
 
 
-def get_url():
-    return settings.database_url
-
-
 def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode.
-
-    This configures the context with just a URL
-    and not an Engine, though an Engine is acceptable
-    here as well.  By skipping the Engine creation
-    we don't even need a DBAPI to be available.
-
-    Calls to context.execute() here emit the given string to the
-    script output.
-
-    """
-    url = get_url()
+    """Run migrations in 'offline' mode."""
+    from app.config import get_settings
+    url = get_settings().database_url
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -67,21 +51,8 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode.
-
-    In this scenario we need to create an Engine
-    and associate a connection with the context.
-
-    """
-    configuration = config.get_section(config.config_ini_section, {})
-    configuration["sqlalchemy.url"] = get_url()
-    connectable = engine_from_config(
-        configuration,
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
-
-    with connectable.connect() as connection:
+    """Run migrations in 'online' mode using the app's engine (supports fallback)."""
+    with engine.connect() as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata
         )
