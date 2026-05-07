@@ -1,6 +1,6 @@
 export const BASE_URL = import.meta.env.DEV
   ? ''
-  : (import.meta.env.VITE_API_BASE_URL || '')
+  : (import.meta.env.VITE_API_BASE_URL || 'https://travelogue-pkmg.onrender.com')
 
 export async function request<T = any>(options: {
   url: string
