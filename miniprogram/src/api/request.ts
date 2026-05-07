@@ -1,7 +1,11 @@
 import Taro from '@tarojs/taro'
 
-// 开发环境改成你的后端地址
-export const BASE_URL = 'http://192.168.1.6:8000'
+// 通过 config/index.js 中的 defineConstants 注入，
+// 或在编译时设置环境变量 TARO_APP_BASE_URL
+// eslint-disable-next-line no-undef
+declare const API_BASE_URL: string
+
+export const BASE_URL = typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://localhost:8000'
 
 interface RequestOptions {
   url: string

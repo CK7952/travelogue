@@ -3,28 +3,16 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 import os
 import shutil
-import uuid
+import tempfile
 from app.database import get_db
 from app import models, schemas
 from app.config import get_settings
+from app.storage import save_upload_file
 from app.services.whisper_service import transcribe_audio
 from app.services.llm_service import clean_transcript, suggest_tags
 
 router = APIRouter()
 settings = get_settings()
-
-
-def save_upload_file(upload_file: UploadFile, folder: str) -> str:
-    """保存上传文件到本地存储，返回可访问URL路径"""
-    upload_dir = os.path.join(settings.local_storage_path, folder)
-    os.makedirs(upload_dir, exist_ok=True)
-    ext = os.path.splitext(upload_file.filename or "")[1]
-    filename = f"{uuid.uuid4().hex}{ext}"
-    file_path = os.path.join(upload_dir, filename)
-    with open(file_path, "wb") as f:
-        shutil.copyfileobj(upload_file.file, f)
-    # 返回相对路径，供后续拼接完整URL
-    return f"/uploads/{folder}/{filename}"
 
 
 @router.post("", response_model=schemas.FragmentResponse)
@@ -103,12 +91,16 @@ def transcribe_fragment(
     lat = float(latitude) if latitude and latitude.strip() else None
     lon = float(longitude) if longitude and longitude.strip() else None
 
-    # 保存音频文件
-    audio_url = save_upload_file(audio, "audio")
-    audio_path = os.path.join(settings.local_storage_path, audio_url.lstrip("/uploads/"))
+    # 保存音频到临时文件供 Whisper 转写（转写后删除，不长期存储）
+    suffix = os.path.splitext(audio.filename or "")[1] or ".webm"
+    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+        shutil.copyfileobj(audio.file, tmp)
+        tmp_path = tmp.name
 
-    # 语音转文字
-    raw_text = transcribe_audio(audio_path)
+    try:
+        raw_text = transcribe_audio(tmp_path)
+    finally:
+        os.unlink(tmp_path)
 
     # 保守清理
     cleaned_text = clean_transcript(raw_text)

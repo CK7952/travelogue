@@ -1,17 +1,25 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+from typing import List
 
 
 class Settings(BaseSettings):
     app_name: str = "Travelogue Backend"
+    environment: str = "development"  # development / production
     debug: bool = True
 
     # Database
     database_url: str = "postgresql+psycopg2://travelogue:travelogue@localhost:5432/travelogue"
 
-    # File storage (local for dev, COS for prod)
+    # File storage (local for dev, cos for production)
     storage_type: str = "local"  # local or cos
     local_storage_path: str = "./uploads"
+
+    # COS (Tencent Cloud Object Storage) — optional, only used when storage_type=cos
+    cos_secret_id: str = ""
+    cos_secret_key: str = ""
+    cos_bucket: str = ""
+    cos_region: str = "ap-guangzhou"
 
     # Whisper
     whisper_model: str = "base"  # tiny/base/small/medium/large-v3
@@ -28,8 +36,16 @@ class Settings(BaseSettings):
     multimodal_base_url: str = "http://localhost:8000/v1"
     multimodal_model: str = "Qwen2-VL-7B-Instruct"
 
+    # CORS
+    cors_origins: str = "*"  # comma-separated list, e.g. "https://a.com,https://b.com"
+
     class Config:
         env_file = ".env"
+
+    def get_cors_origins(self) -> List[str]:
+        if self.environment == "development" or self.cors_origins == "*":
+            return ["*"]
+        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
 
 
 @lru_cache()

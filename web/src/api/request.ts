@@ -1,4 +1,6 @@
-export const BASE_URL = '' // 使用Vite代理，留空
+export const BASE_URL = import.meta.env.DEV
+  ? ''
+  : (import.meta.env.VITE_API_BASE_URL || '')
 
 export async function request<T = any>(options: {
   url: string

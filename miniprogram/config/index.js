@@ -10,7 +10,9 @@ const config = {
   sourceRoot: 'src',
   outputRoot: 'dist',
   plugins: [],
-  defineConstants: {},
+  defineConstants: {
+    API_BASE_URL: JSON.stringify(process.env.TARO_APP_BASE_URL || 'http://localhost:8000'),
+  },
   copy: {
     patterns: [],
     options: {}
