@@ -20,6 +20,8 @@ def save_upload_file(upload_file: UploadFile, folder: str) -> str:
 
     if settings.storage_type == "cos":
         return _save_to_cos(upload_file, folder, filename)
+    if settings.storage_type == "supabase":
+        return _save_to_supabase(upload_file, folder, filename)
     return _save_to_local(upload_file, folder, filename)
 
 
@@ -52,6 +54,24 @@ def _save_to_cos(upload_file: UploadFile, folder: str, filename: str) -> str:
         Key=key,
     )
     return f"https://{settings.cos_bucket}.cos.{settings.cos_region}.myqcloud.com/{key}"
+
+
+def _save_to_supabase(upload_file: UploadFile, folder: str, filename: str) -> str:
+    try:
+        from supabase import create_client
+    except ImportError:
+        raise RuntimeError("storage_type is 'supabase' but supabase-py is not installed")
+
+    supabase = create_client(settings.supabase_url, settings.supabase_service_role_key)
+    path = f"{folder}/{filename}"
+    content = upload_file.file.read()
+
+    supabase.storage.from_(settings.supabase_storage_bucket).upload(
+        path,
+        content,
+        {"content-type": upload_file.content_type or "application/octet-stream"},
+    )
+    return supabase.storage.from_(settings.supabase_storage_bucket).get_public_url(path)
 
 
 def get_file_url(relative_or_cos_url: str) -> str:

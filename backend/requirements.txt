@@ -15,5 +15,6 @@ passlib[bcrypt]==1.7.4
 alembic==1.14.0
 gunicorn==23.0.0
 cos-python-sdk-v5==1.9.32
+supabase==2.13.0
 numpy==1.26.4
 pillow==11.0.0

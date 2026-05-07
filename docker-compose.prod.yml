@@ -1,19 +1,6 @@
 version: "3.8"
 
 services:
-  db:
-    image: ankane/pgvector:latest
-    container_name: travelogue_db_prod
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: travelogue
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-travelogue}
-      POSTGRES_DB: travelogue
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - travelogue
-
   backend:
     build:
       context: ./backend
@@ -24,21 +11,14 @@ services:
     restart: unless-stopped
     env_file:
       - ./backend/.env
-    environment:
-      - DATABASE_URL=postgresql+psycopg2://travelogue:${DB_PASSWORD:-travelogue}@db:5432/travelogue
     ports:
       - "8000:8000"
     volumes:
-      - uploads:/app/uploads
       - whisper_cache:/root/.cache
-    depends_on:
-      - db
     networks:
       - travelogue
 
 volumes:
-  pgdata:
-  uploads:
   whisper_cache:
 
 networks:

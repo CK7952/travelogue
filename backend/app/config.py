@@ -11,8 +11,8 @@ class Settings(BaseSettings):
     # Database
     database_url: str = "postgresql+psycopg2://travelogue:travelogue@localhost:5432/travelogue"
 
-    # File storage (local for dev, cos for production)
-    storage_type: str = "local"  # local or cos
+    # File storage (local | cos | supabase)
+    storage_type: str = "local"  # local or cos or supabase
     local_storage_path: str = "./uploads"
 
     # COS (Tencent Cloud Object Storage) — optional, only used when storage_type=cos
@@ -20,6 +20,11 @@ class Settings(BaseSettings):
     cos_secret_key: str = ""
     cos_bucket: str = ""
     cos_region: str = "ap-guangzhou"
+
+    # Supabase — optional, only used when storage_type=supabase
+    supabase_url: str = ""
+    supabase_service_role_key: str = ""
+    supabase_storage_bucket: str = "travelogue"
 
     # Whisper
     whisper_model: str = "base"  # tiny/base/small/medium/large-v3
