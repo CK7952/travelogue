@@ -1,12 +1,27 @@
 version: "3.8"
 
 services:
+  db:
+    image: ankane/pgvector:latest
+    container_name: travelogue_db_prod
+    restart: unless-stopped
+    environment:
+      # 内部网络专用，不暴露到宿主机；改密码时同步改 backend/.env 里的 database_url
+      POSTGRES_USER: travelogue
+      POSTGRES_PASSWORD: CHANGE_ME_strong_password
+      POSTGRES_DB: travelogue
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - travelogue
+    # 不暴露端口到宿主机，只走容器内部网络
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
       args:
-        WHISPER_MODEL: ${WHISPER_MODEL:-base}
+        WHISPER_MODEL: ${WHISPER_MODEL:-tiny}
     container_name: travelogue_backend_prod
     restart: unless-stopped
     env_file:
@@ -18,9 +33,12 @@ services:
       - ./backend/uploads:/app/uploads
     networks:
       - travelogue
+    depends_on:
+      - db
 
 volumes:
   whisper_cache:
+  pgdata:
 
 networks:
   travelogue:
