@@ -77,7 +77,7 @@ def update_essay(essay_id: int, essay_update: schemas.EssayCreate, db: Session =
     return essay
 
 
-@router.delete("/{essay_id}")
+@router.delete("/{essay_id}", response_model=schemas.DeleteResponse)
 def delete_essay(essay_id: int, db: Session = Depends(get_db)):
     essay = db.query(models.Essay).filter(models.Essay.id == essay_id).first()
     if not essay:

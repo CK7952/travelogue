@@ -1,67 +1,104 @@
 .essay-page {
-  padding: 24px 20px;
-  background: #faf8f5;
+  position: relative;
   min-height: 100vh;
+  padding: 40px 24px 56px;
+  background:
+    radial-gradient(circle at top left, rgba(248, 226, 221, 0.58) 0%, rgba(248, 226, 221, 0) 34%),
+    linear-gradient(180deg, #faf7f2 0%, #f3eee7 100%);
+  overflow: hidden;
+}
+
+.essay-glow {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  filter: blur(18px);
+  opacity: 0.7;
+}
+
+.essay-glow-left {
+  top: 0;
+  left: -110px;
+  background: radial-gradient(circle, rgba(251, 229, 223, 0.85) 0%, rgba(251, 229, 223, 0) 72%);
+}
+
+.essay-glow-right {
+  top: 240px;
+  right: -100px;
+  background: radial-gradient(circle, rgba(224, 233, 226, 0.78) 0%, rgba(224, 233, 226, 0) 72%);
+}
+
+.essay-header,
+.essay-body,
+.essay-footer {
+  position: relative;
+  z-index: 1;
 }
 
 .essay-header {
-  text-align: center;
-  margin-bottom: 32px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #e8e4df;
+  margin-bottom: 28px;
+  padding: 28px 24px;
+  border: 1px solid rgba(148, 124, 103, 0.12);
+  border-radius: 30px;
+  background: rgba(255, 252, 248, 0.88);
+  box-shadow: 0 24px 56px rgba(113, 84, 66, 0.09);
 }
 
 .essay-style {
   display: inline-block;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(143, 167, 154, 0.13);
+  color: #6b8175;
   font-size: 12px;
-  color: #8b7e6a;
-  background: #f0ece4;
-  padding: 4px 12px;
-  border-radius: 12px;
-  margin-bottom: 12px;
 }
 
 .essay-title {
   display: block;
-  font-size: 22px;
-  font-weight: 700;
-  color: #2c2c2c;
-  line-height: 1.4;
-  margin-bottom: 8px;
+  margin-top: 16px;
+  color: #40352d;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.35;
 }
 
 .essay-date {
-  font-size: 13px;
-  color: #999;
+  display: block;
+  margin-top: 12px;
+  color: #a18f80;
+  font-size: 12px;
+  letter-spacing: 2px;
 }
 
 .essay-body {
-  margin-bottom: 40px;
+  padding: 0 4px;
 }
 
 .essay-paragraph {
   display: block;
-  font-size: 16px;
-  line-height: 1.8;
-  color: #444;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+  color: #4b3f37;
+  font-size: 17px;
+  line-height: 2;
   text-align: justify;
 }
 
 .essay-footer {
+  margin-top: 32px;
   text-align: center;
-  padding-top: 20px;
-  border-top: 1px solid #e8e4df;
 }
 
 .footer-hint {
+  color: #b0a093;
   font-size: 12px;
-  color: #bbb;
+  letter-spacing: 2px;
 }
 
 .loading {
   display: block;
+  padding-top: 120px;
+  color: #8d7e73;
+  font-size: 15px;
   text-align: center;
-  padding: 100px 0;
-  color: #999;
 }

@@ -59,7 +59,7 @@ def update_fragment(fragment_id: int, fragment_update: schemas.FragmentUpdate, d
     return fragment
 
 
-@router.delete("/{fragment_id}")
+@router.delete("/{fragment_id}", response_model=schemas.DeleteResponse)
 def delete_fragment(fragment_id: int, db: Session = Depends(get_db)):
     fragment = db.query(models.Fragment).filter(models.Fragment.id == fragment_id).first()
     if not fragment:
@@ -115,7 +115,7 @@ def transcribe_fragment(
     )
 
 
-@router.post("/{fragment_id}/photos")
+@router.post("/{fragment_id}/photos", response_model=schemas.PhotoUploadResponse)
 def upload_photo(fragment_id: int, photo: UploadFile = File(...), db: Session = Depends(get_db)):
     fragment = db.query(models.Fragment).filter(models.Fragment.id == fragment_id).first()
     if not fragment:
@@ -128,4 +128,4 @@ def upload_photo(fragment_id: int, photo: UploadFile = File(...), db: Session = 
     fragment.photos = current_photos
     db.commit()
     db.refresh(fragment)
-    return {"photo_url": photo_url}
+    return schemas.PhotoUploadResponse(photo_url=photo_url)

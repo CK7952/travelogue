@@ -15,8 +15,8 @@ interface Essay {
 
 const styleNames: Record<string, string> = {
   literary: '文艺散文',
-  casual: '轻松碎碎念',
-  observational: '博物观察',
+  casual: '轻松随笔',
+  observational: '观察札记',
 }
 
 export default function EssayPage() {
@@ -47,17 +47,18 @@ export default function EssayPage() {
     )
   }
 
-  // 简单按换行分段渲染
+  // 按换行拆分段落，保持阅读节奏。
   const paragraphs = essay.content.split('\n').filter((p) => p.trim())
 
   return (
     <ScrollView className='essay-page' scrollY>
+      <View className='essay-glow essay-glow-left' />
+      <View className='essay-glow essay-glow-right' />
+
       <View className='essay-header'>
         <Text className='essay-style'>{styleNames[essay.style] || essay.style}</Text>
         <Text className='essay-title'>{essay.title}</Text>
-        <Text className='essay-date'>
-          {new Date(essay.created_at).toLocaleDateString('zh-CN')}
-        </Text>
+        <Text className='essay-date'>{new Date(essay.created_at).toLocaleDateString('zh-CN')}</Text>
       </View>
 
       <View className='essay-body'>
@@ -69,7 +70,7 @@ export default function EssayPage() {
       </View>
 
       <View className='essay-footer'>
-        <Text className='footer-hint'>— 由你的旅途碎片自动生成 —</Text>
+        <Text className='footer-hint'>由你的旅途片段缓缓生成</Text>
       </View>
     </ScrollView>
   )

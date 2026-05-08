@@ -1,6 +1,23 @@
-from pydantic import BaseModel
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Literal, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
+
+TripStatus = Literal["ongoing", "completed"]
+EssayStyle = Literal["literary", "casual", "observational"]
+
+
+class ORMModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class DeleteResponse(BaseModel):
+    message: str
+
+
+class PhotoUploadResponse(BaseModel):
+    photo_url: str
 
 
 # ==================== Trip ====================
@@ -18,16 +35,13 @@ class TripCreate(TripBase):
 class TripUpdate(BaseModel):
     title: Optional[str] = None
     destination: Optional[str] = None
-    status: Optional[str] = None
+    status: Optional[TripStatus] = None
 
 
-class TripResponse(TripBase):
+class TripResponse(ORMModel, TripBase):
     id: int
-    status: str
+    status: TripStatus
     created_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 # ==================== Fragment ====================
@@ -37,7 +51,7 @@ class FragmentBase(BaseModel):
     raw_text: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
-    tags: List[str] = []
+    tags: List[str] = Field(default_factory=list)
     mood: Optional[str] = None
 
 
@@ -51,42 +65,36 @@ class FragmentUpdate(BaseModel):
     mood: Optional[str] = None
 
 
-class FragmentResponse(FragmentBase):
+class FragmentResponse(ORMModel, FragmentBase):
     id: int
     audio_url: Optional[str] = None
     photos: Optional[List[str]] = None
     recorded_at: datetime
     created_at: datetime
 
-    class Config:
-        from_attributes = True
-
 
 # ==================== Essay ====================
 class EssayBase(BaseModel):
     trip_id: int
-    style: str = "casual"  # literary, casual, observational
+    style: EssayStyle = "casual"
 
 
 class EssayCreate(EssayBase):
     pass
 
 
-class EssayResponse(BaseModel):
+class EssayResponse(ORMModel):
     id: int
     trip_id: int
     title: Optional[str] = None
     content: Optional[str] = None
-    style: str
+    style: EssayStyle
     status: str
     created_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 # ==================== Transcribe ====================
 class TranscribeResponse(BaseModel):
     raw_text: str
     cleaned_text: str
-    suggested_tags: List[str]
+    suggested_tags: List[str] = Field(default_factory=list)

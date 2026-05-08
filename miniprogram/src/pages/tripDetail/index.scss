@@ -1,9 +1,38 @@
 .trip-detail-page {
-  padding: 40px 20px;
-  text-align: center;
+  min-height: 100vh;
+  padding: 48px 24px;
+  background:
+    radial-gradient(circle at top left, rgba(248, 226, 221, 0.55) 0%, rgba(248, 226, 221, 0) 36%),
+    linear-gradient(180deg, #f8f4ef 0%, #f2ede5 100%);
+}
+
+.detail-card {
+  padding: 36px 28px;
+  border: 1px solid rgba(148, 124, 103, 0.12);
+  border-radius: 30px;
+  background: rgba(255, 252, 248, 0.9);
+  box-shadow: 0 24px 56px rgba(113, 84, 66, 0.10);
+}
+
+.detail-kicker {
+  display: block;
+  margin-bottom: 12px;
+  color: #a18f80;
+  font-size: 11px;
+  letter-spacing: 4px;
+}
+
+.detail-title {
+  display: block;
+  color: #40352d;
+  font-size: 30px;
+  font-weight: 600;
 }
 
 .hint {
-  color: #999;
-  font-size: 14px;
+  display: block;
+  margin-top: 14px;
+  color: #77675a;
+  font-size: 15px;
+  line-height: 1.9;
 }

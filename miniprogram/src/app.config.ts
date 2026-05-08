@@ -6,8 +6,8 @@ export default defineAppConfig({
   ],
   window: {
     backgroundTextStyle: 'light',
-    navigationBarBackgroundColor: '#fff',
-    navigationBarTitleText: '风物志',
+    navigationBarBackgroundColor: '#f8f4ef',
+    navigationBarTitleText: '旅途手札',
     navigationBarTextStyle: 'black',
   },
 })

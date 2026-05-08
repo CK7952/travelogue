@@ -20,7 +20,7 @@ export default function Recorder({ onRecordComplete }: RecorderProps) {
     timerRef.current = setInterval(() => {
       setRecordTime((prev) => {
         if (prev >= 28) {
-          // 接近30秒自动停止
+          // 接近 30 秒时自动停止，避免超出平台限制。
           stopRecord()
           return prev
         }
@@ -60,13 +60,13 @@ export default function Recorder({ onRecordComplete }: RecorderProps) {
         onTouchStart={startRecord}
         onTouchEnd={stopRecord}
       >
-        <Text className='recorder-icon'>{isRecording ? '◼' : '●'}</Text>
+        <Text className='recorder-icon'>{isRecording ? '■' : '●'}</Text>
       </View>
       <Text className='recorder-hint'>
         {isRecording ? `录音中 ${recordTime}s / 30s` : '按住说话'}
       </Text>
       {!isRecording && (
-        <Text className='recorder-sub-hint'>最长 30 秒</Text>
+        <Text className='recorder-sub-hint'>最长 30 秒，松手后自动整理成片段</Text>
       )}
     </View>
   )

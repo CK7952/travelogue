@@ -1,324 +1,394 @@
-/* ===== 旅行手账风格设计系统 ===== */
-$paper: #f7f3ed;
-$card: #fffef8;
-$ink: #2c241b;
-$ink-light: #5c4f3d;
-$ink-fade: #9e9080;
-$accent-teal: #5b8c85;
-$accent-clay: #c9705c;
-$accent-gold: #c9a227;
-$accent-wash: rgba(91, 140, 133, 0.08);
-$shadow-soft: 0 8px 32px rgba(44, 36, 27, 0.08);
-$shadow-card: 2px 3px 0 rgba(44, 36, 27, 0.06);
+$page-bg: #f8f4ef;
+$page-bg-deep: #efe8de;
+$surface: rgba(255, 252, 248, 0.88);
+$surface-strong: rgba(255, 252, 248, 0.96);
+$border: rgba(148, 124, 103, 0.14);
+$text-main: #40352d;
+$text-soft: #77675a;
+$text-faint: #a18f80;
+$accent: #b88972;
+$accent-soft: #ead4c7;
+$accent-green: #8fa79a;
+$shadow-soft: 0 24px 60px rgba(102, 74, 55, 0.10);
+$shadow-light: 0 12px 30px rgba(128, 100, 81, 0.08);
 
-/* ===== 页面基底 ===== */
 .index-page {
-  background: $paper;
-  min-height: 100vh;
-  padding-bottom: 200px;
-}
-
-/* ===== 顶部手账标题区 ===== */
-.journal-header {
-  padding: 32px 20px 20px;
-  text-align: center;
   position: relative;
+  min-height: 100vh;
+  padding: 40px 24px 228px;
+  overflow: hidden;
 }
 
-.journal-header::after {
-  content: '';
+.page-glow {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  filter: blur(20px);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.page-glow-left {
+  top: -80px;
+  left: -120px;
+  background: radial-gradient(circle, rgba(248, 226, 221, 0.92) 0%, rgba(248, 226, 221, 0) 68%);
+}
+
+.page-glow-right {
+  top: 200px;
+  right: -120px;
+  background: radial-gradient(circle, rgba(224, 233, 226, 0.82) 0%, rgba(224, 233, 226, 0) 68%);
+}
+
+.journal-header {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 28px;
+  padding: 8px 4px 16px;
+}
+
+.journal-kicker {
   display: block;
-  width: 60px;
-  height: 2px;
-  background: $ink-fade;
-  margin: 16px auto 0;
-  opacity: 0.4;
+  margin-bottom: 10px;
+  color: $text-faint;
+  font-size: 11px;
+  letter-spacing: 5px;
 }
 
 .journal-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: $ink;
-  letter-spacing: 6px;
-}
-
-.journal-subtitle {
-  font-size: 13px;
-  color: $ink-fade;
-  margin-top: 6px;
+  display: block;
+  color: $text-main;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.1;
   letter-spacing: 2px;
 }
 
-/* ===== 行程便签区 ===== */
+.journal-subtitle {
+  display: block;
+  max-width: 520px;
+  margin-top: 14px;
+  color: $text-soft;
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 14px;
+  gap: 16px;
+}
+
 .trip-section {
-  padding: 0 16px 20px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 20px;
 }
 
 .trip-section-label {
+  color: $text-main;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.trip-section-caption {
+  color: $text-faint;
   font-size: 12px;
-  color: $ink-fade;
-  margin-bottom: 12px;
-  padding-left: 4px;
-  letter-spacing: 1px;
+  text-align: right;
 }
 
 .trip-tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  white-space: nowrap;
+}
+
+.trip-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .trip-tab {
-  padding: 10px 20px;
-  border-radius: 4px 16px 4px 16px;
-  background: $card;
-  box-shadow: $shadow-card;
-  border: 1px solid rgba(44, 36, 27, 0.06);
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-width: 176px;
+  min-height: 86px;
+  padding: 18px 20px;
+  border: 1px solid $border;
+  border-radius: 28px;
+  background: $surface;
+  box-shadow: $shadow-light;
+  backdrop-filter: blur(18px);
 
   &.active {
-    background: $accent-teal;
-    box-shadow: 2px 3px 0 rgba(91, 140, 133, 0.3);
-    border-color: transparent;
-
-    .trip-tab-title { color: #fff; }
-    .trip-tab-status { color: rgba(255,255,255,0.75); }
+    border-color: rgba(184, 137, 114, 0.28);
+    background: linear-gradient(135deg, rgba(255, 250, 246, 0.98) 0%, rgba(247, 239, 232, 0.92) 100%);
+    box-shadow: $shadow-soft;
   }
 
   &.add-btn {
-    background: transparent;
-    border: 2px dashed $ink-fade;
-    color: $ink-fade;
-    box-shadow: none;
+    justify-content: center;
+    min-width: 138px;
+    background: rgba(255, 252, 248, 0.56);
+    border-style: dashed;
+    border-color: rgba(184, 137, 114, 0.28);
   }
+}
+
+.trip-tab-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trip-tab-title {
+  color: $text-main;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.trip-tab-status {
+  width: fit-content;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(143, 167, 154, 0.14);
+  color: #6b8175;
+  font-size: 11px;
 }
 
 .trip-tab-delete {
   position: absolute;
-  top: -8px;
-  right: -6px;
-  width: 20px;
-  height: 20px;
-  line-height: 18px;
-  text-align: center;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: $accent-clay;
-  color: #fff;
-  font-size: 12px;
-  box-shadow: 1px 2px 4px rgba(201, 112, 92, 0.3);
-}
-
-.trip-tab-title {
+  background: rgba(184, 137, 114, 0.10);
+  color: $accent;
   font-size: 16px;
-  font-weight: 600;
-  color: $ink;
+  line-height: 24px;
+  text-align: center;
 }
 
-.trip-tab-status {
-  font-size: 11px;
-  color: $ink-fade;
-  margin-top: 3px;
-}
-
-/* ===== 当前行程信息条 ===== */
 .trip-info-bar {
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 20px;
-  margin: 0 16px 24px;
-  background: $card;
-  border-radius: 8px;
-  box-shadow: $shadow-card;
-  border: 1px solid rgba(44, 36, 27, 0.04);
+  gap: 16px;
+  margin-bottom: 22px;
+  padding: 22px 20px;
+  border: 1px solid $border;
+  border-radius: 28px;
+  background: $surface-strong;
+  box-shadow: $shadow-light;
+  backdrop-filter: blur(16px);
+}
+
+.trip-info-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trip-info-label {
+  color: $text-faint;
+  font-size: 11px;
+  letter-spacing: 3px;
 }
 
 .trip-destination {
-  font-size: 15px;
-  color: $ink-light;
-  font-weight: 500;
+  color: $text-main;
+  font-size: 22px;
+  font-weight: 600;
 }
 
 .finish-btn {
+  flex-shrink: 0;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #b88972 0%, #c49c88 100%);
+  color: #fffaf6;
   font-size: 13px;
-  color: #fff;
-  background: $accent-clay;
-  padding: 8px 18px;
-  border-radius: 20px;
-  font-weight: 600;
-  box-shadow: 1px 2px 0 rgba(201, 112, 92, 0.2);
+  box-shadow: 0 10px 24px rgba(184, 137, 114, 0.20);
 }
 
-/* ===== 碎片列表 ===== */
 .fragment-list {
-  padding: 0 16px;
+  position: relative;
+  z-index: 1;
 }
 
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 80px 20px;
+  margin-top: 48px;
+  padding: 40px 20px 20px;
 }
 
 .empty-illustration {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #e8e0d4 0%, #d4c8b8 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
-  box-shadow: inset 0 2px 8px rgba(0,0,0,0.06);
+  width: 142px;
+  height: 142px;
+  margin-bottom: 26px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255, 251, 247, 0.95) 0%, rgba(239, 232, 224, 0.72) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), $shadow-light;
 }
 
 .empty-illustration-inner {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: $paper;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 98px;
+  height: 98px;
+  border-radius: 50%;
+  background: rgba(255, 252, 248, 0.82);
+  border: 1px solid rgba(184, 137, 114, 0.12);
+}
+
+.empty-mark {
+  color: $accent;
+  font-size: 34px;
+}
+
+.empty-title {
+  display: block;
+  color: $text-main;
+  font-size: 19px;
+  font-weight: 600;
 }
 
 .empty-text {
-  font-size: 15px;
-  color: $ink-fade;
+  display: block;
+  max-width: 420px;
+  margin-top: 10px;
+  color: $text-soft;
+  font-size: 14px;
+  line-height: 1.9;
   text-align: center;
-  line-height: 1.8;
 }
 
-/* ===== 手账卡片（碎片） ===== */
 .fragment-card {
-  background: $card;
-  border-radius: 2px 20px 2px 20px;
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: $shadow-soft;
-  position: relative;
-
-  /* 左侧胶带装饰 */
-  &::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 24px;
-    width: 48px;
-    height: 18px;
-    background: rgba(201, 162, 39, 0.25);
-    border-radius: 2px;
-    transform: rotate(-2deg);
-  }
+  margin-bottom: 18px;
+  padding: 22px 20px;
+  border: 1px solid $border;
+  border-radius: 28px;
+  background: $surface-strong;
+  box-shadow: $shadow-light;
+  backdrop-filter: blur(16px);
 
   &.draft {
-    border: 1.5px solid $accent-teal;
-    background: linear-gradient(180deg, #f8faf9 0%, $card 100%);
-
-    &::before {
-      background: rgba(91, 140, 133, 0.25);
-    }
+    background: linear-gradient(180deg, rgba(255, 252, 248, 0.98) 0%, rgba(245, 250, 247, 0.94) 100%);
+    border-color: rgba(143, 167, 154, 0.24);
   }
 }
 
 .fragment-header {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 16px;
 }
 
 .fragment-date-stamp {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  background: $paper;
-  border-radius: 4px;
-  border: 1px solid rgba(44, 36, 27, 0.06);
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: rgba(248, 244, 239, 0.92);
 }
 
 .fragment-date-day {
-  font-size: 18px;
+  color: $accent;
+  font-size: 22px;
   font-weight: 700;
-  color: $accent-clay;
   line-height: 1;
 }
 
 .fragment-date-rest {
+  display: block;
+  color: $text-faint;
   font-size: 11px;
-  color: $ink-fade;
-  line-height: 1.2;
+  line-height: 1.6;
 }
 
 .fragment-delete {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(184, 137, 114, 0.08);
+  color: $accent;
   font-size: 12px;
-  color: $accent-clay;
-  padding: 4px 10px;
-  border-radius: 12px;
-  background: rgba(201, 112, 92, 0.06);
-  font-weight: 500;
 }
 
 .fragment-content {
+  color: $text-main;
   font-size: 16px;
-  line-height: 1.85;
-  color: $ink;
-  font-weight: 400;
-}
-
-/* 手写感引号装饰 */
-.fragment-content::before {
-  content: '"';
-  font-size: 36px;
-  color: $accent-gold;
-  opacity: 0.3;
-  line-height: 0.5;
-  margin-right: 4px;
-  font-family: Georgia, serif;
+  line-height: 1.9;
 }
 
 .fragment-tags {
-  margin-top: 16px;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-top: 16px;
 }
 
 .tag {
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(143, 167, 154, 0.13);
+  color: #6b8175;
   font-size: 12px;
-  color: $accent-teal;
-  background: $accent-wash;
-  padding: 4px 12px;
-  border-radius: 2px 10px 2px 10px;
-  font-weight: 600;
 }
 
-/* ===== 照片（拍立得风格） ===== */
 .photo-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
   margin-top: 18px;
 }
 
 .photo-wrapper {
   aspect-ratio: 1;
-  padding: 6px 6px 20px;
-  background: #fff;
-  border-radius: 2px;
-  box-shadow: 1px 2px 6px rgba(44, 36, 27, 0.1);
-  transform: rotate(-1deg);
-
-  &:nth-child(2) { transform: rotate(1.5deg); }
-  &:nth-child(3) { transform: rotate(-0.5deg); }
+  padding: 5px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 8px 20px rgba(99, 76, 60, 0.09);
 }
 
 .photo-thumb {
   width: 100%;
   height: 100%;
-  border-radius: 1px;
+  border-radius: 16px;
+}
+
+.draft-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.draft-label {
+  color: $accent-green;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.draft-hint {
+  color: $text-faint;
+  font-size: 12px;
 }
 
 .add-photo-btn {
@@ -326,98 +396,71 @@ $shadow-card: 2px 3px 0 rgba(44, 36, 27, 0.06);
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 116px;
   aspect-ratio: 1;
-  padding: 6px 6px 20px;
-  background: #fff;
-  border-radius: 2px;
-  box-shadow: 1px 2px 6px rgba(44, 36, 27, 0.08);
-  border: 1.5px dashed $ink-fade;
   margin-top: 18px;
-  width: 100px;
+  border: 1px dashed rgba(184, 137, 114, 0.28);
+  border-radius: 22px;
+  background: rgba(255, 252, 248, 0.66);
 }
 
 .add-photo-icon {
+  color: $accent;
   font-size: 24px;
-  color: $ink-fade;
   line-height: 1;
 }
 
 .add-photo-text {
-  font-size: 11px;
-  color: $ink-fade;
-  margin-top: 4px;
-}
-
-/* ===== 草稿卡片 ===== */
-.draft-badge {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.draft-label {
-  font-size: 14px;
-  color: $accent-teal;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-.draft-hint {
+  margin-top: 8px;
+  color: $text-soft;
   font-size: 12px;
-  color: $ink-fade;
 }
 
 .draft-actions {
   display: flex;
-  margin-top: 24px;
   gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-save,
+.btn-discard {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: 18px;
+  text-align: center;
+  font-size: 15px;
 }
 
 .btn-save {
-  flex: 1;
-  text-align: center;
-  background: $accent-teal;
+  background: linear-gradient(135deg, #95aa9f 0%, #7e978b 100%);
   color: #fff;
-  padding: 14px 0;
-  border-radius: 4px 16px 4px 16px;
-  font-size: 16px;
-  font-weight: 700;
-  box-shadow: 2px 3px 0 rgba(91, 140, 133, 0.2);
+  box-shadow: 0 10px 22px rgba(126, 151, 139, 0.20);
 }
 
 .btn-discard {
-  flex: 1;
-  text-align: center;
-  background: transparent;
-  color: $ink-fade;
-  padding: 14px 0;
-  border-radius: 4px 16px 4px 16px;
-  font-size: 16px;
-  font-weight: 600;
-  border: 1.5px dashed $ink-fade;
+  border: 1px solid rgba(148, 124, 103, 0.16);
+  background: rgba(255, 252, 248, 0.78);
+  color: $text-soft;
 }
 
-/* ===== 底部录音区 ===== */
 .recorder-section {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba($paper, 0.95);
-  backdrop-filter: blur(16px);
-  padding: 16px 0 40px;
-  border-top: 1px solid rgba(44, 36, 27, 0.06);
+  left: 18px;
+  right: 18px;
+  bottom: 22px;
   z-index: 10;
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+  border: 1px solid rgba(148, 124, 103, 0.12);
+  border-radius: 32px;
+  background: rgba(255, 251, 247, 0.84);
+  box-shadow: 0 24px 60px rgba(98, 74, 58, 0.15);
+  backdrop-filter: blur(24px);
 }
 
 .transcribing-hint {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 28px 0;
-  color: $accent-teal;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 20px 0;
+  color: $accent-green;
+  font-size: 15px;
 }

@@ -48,9 +48,17 @@ class Settings(BaseSettings):
         env_file = ".env"
 
     def get_cors_origins(self) -> List[str]:
-        if self.environment == "development" or self.cors_origins == "*":
+        if self.environment == "development":
             return ["*"]
-        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+
+        normalized = self.cors_origins.strip()
+        if normalized == "*" or not normalized:
+            raise ValueError("Production CORS must explicitly list allowed origins.")
+
+        origins = [origin.strip() for origin in normalized.split(",") if origin.strip()]
+        if not origins:
+            raise ValueError("Production CORS must include at least one allowed origin.")
+        return origins
 
 
 @lru_cache()

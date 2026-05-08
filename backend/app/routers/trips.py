@@ -42,7 +42,7 @@ def update_trip(trip_id: int, trip_update: schemas.TripUpdate, db: Session = Dep
     return trip
 
 
-@router.delete("/{trip_id}")
+@router.delete("/{trip_id}", response_model=schemas.DeleteResponse)
 def delete_trip(trip_id: int, db: Session = Depends(get_db)):
     trip = db.query(models.Trip).filter(models.Trip.id == trip_id).first()
     if not trip:
