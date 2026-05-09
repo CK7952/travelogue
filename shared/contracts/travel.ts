@@ -57,6 +57,16 @@ export interface GenerateEssayPayload {
   style: string
 }
 
+export interface Essay {
+  id: number
+  trip_id: number
+  title: string | null
+  content: string | null
+  style: string
+  status: string
+  created_at: string
+}
+
 export interface EssayGenerateResponse {
   id: number
 }

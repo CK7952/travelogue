@@ -111,15 +111,15 @@ export function useTripActions({
     })
 
     alert('游记已生成！')
-    console.log('essay id:', essay.id)
 
     const nextTripId = await loadTrips()
     if (nextTripId) {
       await loadFragments(nextTripId)
-      return
+    } else {
+      setFragments([])
     }
 
-    setFragments([])
+    return essay.id
   }
 
   return {

@@ -4,11 +4,13 @@ import TripSidebar from './components/TripSidebar'
 import TripHeader from './components/TripHeader'
 import FragmentList from './components/FragmentList'
 import RecorderBar from './components/RecorderBar'
+import EssayViewer from './components/EssayViewer'
 import { useTrips } from './hooks/useTrips'
 import { useFragments } from './hooks/useFragments'
 import { useDraftFragment } from './hooks/useDraftFragment'
 import { useTripActions } from './hooks/useTripActions'
 import { useFragmentActions } from './hooks/useFragmentActions'
+import { essayApi } from './api/essays'
 import './App.css'
 
 export default function App() {
@@ -16,6 +18,20 @@ export default function App() {
   const { fragments, setFragments, loadFragments } = useFragments()
   const { draftFragment, setDraftFragment, draftPhotos, setDraftPhotos, clearDraft } = useDraftFragment()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [viewingEssayId, setViewingEssayId] = useState<number | null>(null)
+
+  const viewLatestEssay = async (tripId: number) => {
+    try {
+      const essays = await essayApi.listByTrip(tripId)
+      if (essays.length > 0) {
+        setViewingEssayId(essays[0].id)
+      } else {
+        alert('该行程暂无游记')
+      }
+    } catch {
+      alert('加载游记失败')
+    }
+  }
 
   const {
     isTranscribing,
@@ -95,10 +111,15 @@ export default function App() {
             })
           }}
           onFinishTrip={() => {
-            void finishTrip().catch(() => {
-              alert('生成失败')
-            })
+            void finishTrip()
+              .then((id) => {
+                if (id) setViewingEssayId(id)
+              })
+              .catch(() => {
+                alert('生成失败')
+              })
           }}
+          onViewEssays={viewLatestEssay}
         />
 
         <main className="main">
@@ -135,6 +156,13 @@ export default function App() {
           })
         }}
       />
+
+      {viewingEssayId !== null && (
+        <EssayViewer
+          essayId={viewingEssayId}
+          onClose={() => setViewingEssayId(null)}
+        />
+      )}
     </div>
   )
 }

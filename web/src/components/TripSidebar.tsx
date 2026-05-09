@@ -10,6 +10,7 @@ interface TripSidebarProps {
   onSelectTrip: (tripId: number) => void
   onDeleteTrip: (tripId: number) => void
   onFinishTrip: () => void
+  onViewEssays?: (tripId: number) => void
 }
 
 export default function TripSidebar({
@@ -22,6 +23,7 @@ export default function TripSidebar({
   onSelectTrip,
   onDeleteTrip,
   onFinishTrip,
+  onViewEssays,
 }: TripSidebarProps) {
   return (
     <>
@@ -55,6 +57,17 @@ export default function TripSidebar({
 
                 {trip.destination && <span className="trip-item-dest">{trip.destination}</span>}
 
+                {trip.status !== 'ongoing' && onViewEssays && (
+                  <button
+                    className="trip-item-view"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      onViewEssays(trip.id)
+                    }}
+                  >
+                    游记
+                  </button>
+                )}
                 {trip.status !== 'ongoing' && (
                   <button
                     className="trip-item-delete"
