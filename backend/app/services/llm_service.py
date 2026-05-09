@@ -11,17 +11,27 @@ settings = get_settings()
 _http_client = httpx.Client(timeout=60.0)
 
 
-def _call_llm(messages: List[dict], model: str, temperature: float = 0.7, max_tokens: int = 2000) -> str:
+def _call_llm(
+    messages: List[dict],
+    model: str,
+    base_url: str = "",
+    api_key: str = "",
+    temperature: float = 0.7,
+    max_tokens: int = 2000,
+) -> str:
     """调用 OpenAI-compatible API"""
+    _base_url = base_url or settings.llm_base_url
+    _api_key = api_key or settings.llm_api_key
+
     # 检查是否是开发模式（无真实后端）
-    if settings.llm_base_url == "http://localhost:8000/v1" and not _check_service_alive():
+    if _base_url == "http://localhost:8000/v1" and not _check_service_alive():
         warnings.warn("LLM service not available, using fallback/mock mode.")
         return ""
 
     try:
         resp = _http_client.post(
-            f"{settings.llm_base_url}/chat/completions",
-            headers={"Authorization": f"Bearer {settings.llm_api_key}", "Content-Type": "application/json"},
+            f"{_base_url}/chat/completions",
+            headers={"Authorization": f"Bearer {_api_key}", "Content-Type": "application/json"},
             json={
                 "model": model,
                 "messages": messages,
@@ -34,6 +44,53 @@ def _call_llm(messages: List[dict], model: str, temperature: float = 0.7, max_to
         return data["choices"][0]["message"]["content"].strip()
     except Exception as e:
         warnings.warn(f"LLM call failed: {e}")
+        return ""
+
+
+def _call_llm_with_images(
+    messages: List[dict],
+    images: List[str],
+    model: str,
+    base_url: str,
+    api_key: str,
+    temperature: float = 0.7,
+    max_tokens: int = 3000,
+) -> str:
+    """调用支持 vision 的 OpenAI-compatible API"""
+    if not base_url or not model:
+        return ""
+
+    # 构建多模态消息：把原有 user message 的文字内容保留，再追加图片
+    multimodal_messages = []
+    user_content = []
+    for msg in messages:
+        if msg.get("role") == "user":
+            text = msg.get("content", "")
+            if text:
+                user_content.append({"type": "text", "text": text})
+            # 插入图片（限制数量避免 token 爆炸）
+            for img_url in images[:8]:
+                user_content.append({"type": "image_url", "image_url": {"url": img_url}})
+            multimodal_messages.append({"role": "user", "content": user_content})
+        else:
+            multimodal_messages.append(msg)
+
+    try:
+        resp = _http_client.post(
+            f"{base_url}/chat/completions",
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json={
+                "model": model,
+                "messages": multimodal_messages,
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+            },
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        return data["choices"][0]["message"]["content"].strip()
+    except Exception as e:
+        warnings.warn(f"Vision LLM call failed: {e}")
         return ""
 
 
@@ -176,26 +233,30 @@ _ESSAY_SYSTEM_PROMPT = """你是一位旅行文学编辑。用户旅途中随手
 """
 
 
-def _build_essay_prompt(fragments, style: str) -> str:
+def _build_essay_prompt(fragments, style: str) -> Tuple[str, List[str]]:
     style_desc = _STYLE_PROMPTS.get(style, _STYLE_PROMPTS["casual"])
 
     lines = [
-        "以下是用户在旅途中随手记下的片段。它们可能零散、口语化，甚至前言不搭后语。",
+        "以下是用户在旅途中随手记下的片段，每个片段可能包含文字和照片。",
         "请把它们作为素材和灵感，重新创作成一篇完整的旅行文章。不要复述，要创作。",
         "",
         "【旅途片段】",
     ]
+    images: List[str] = []
     for f in fragments:
         tags = ", ".join(f.tags) if f.tags else ""
         tag_prefix = f"[{tags}] " if tags else ""
         lines.append(f"• {tag_prefix}{f.content}")
+        if f.photos:
+            lines.append(f"  [配图：{len(f.photos)}张]")
+            images.extend(f.photos)
 
     lines.append("")
-    lines.append(f"【风格要求】")
+    lines.append("【风格要求】")
     lines.append(style_desc)
     lines.append("")
-    lines.append("请创作。")
-    return "\n".join(lines)
+    lines.append("请结合以上文字和照片进行创作。")
+    return "\n".join(lines), images[:8]
 
 
 def generate_essay(fragments, style: str = "casual") -> Tuple[str, str]:
@@ -203,17 +264,32 @@ def generate_essay(fragments, style: str = "casual") -> Tuple[str, str]:
     if not fragments:
         return "空行程", "暂无记录可生成小记。"
 
-    prompt = _build_essay_prompt(fragments, style)
+    prompt_text, images = _build_essay_prompt(fragments, style)
 
-    result = _call_llm(
-        messages=[
-            {"role": "system", "content": _ESSAY_SYSTEM_PROMPT},
-            {"role": "user", "content": prompt},
-        ],
-        model=settings.llm_model_essay,
-        temperature=0.8,
-        max_tokens=3000,
-    )
+    # 优先使用 vision LLM（如果配置了且有图片）
+    if images and settings.vision_base_url and settings.vision_model:
+        result = _call_llm_with_images(
+            messages=[
+                {"role": "system", "content": _ESSAY_SYSTEM_PROMPT},
+                {"role": "user", "content": prompt_text},
+            ],
+            images=images,
+            model=settings.vision_model,
+            base_url=settings.vision_base_url,
+            api_key=settings.vision_api_key,
+            temperature=0.8,
+            max_tokens=3000,
+        )
+    else:
+        result = _call_llm(
+            messages=[
+                {"role": "system", "content": _ESSAY_SYSTEM_PROMPT},
+                {"role": "user", "content": prompt_text},
+            ],
+            model=settings.llm_model_essay,
+            temperature=0.8,
+            max_tokens=3000,
+        )
 
     if not result:
         # Fallback: 拼接碎片

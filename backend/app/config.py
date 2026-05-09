@@ -37,7 +37,12 @@ class Settings(BaseSettings):
     llm_model_clean: str = "Qwen2.5-3B-Instruct"
     llm_model_essay: str = "Qwen2.5-14B-Instruct"
 
-    # Multimodal
+    # Vision LLM (for essay generation with images; OpenAI-compatible)
+    vision_base_url: str = ""
+    vision_api_key: str = ""
+    vision_model: str = ""
+
+    # Multimodal (legacy local endpoint)
     multimodal_base_url: str = "http://localhost:8000/v1"
     multimodal_model: str = "Qwen2-VL-7B-Instruct"
 
